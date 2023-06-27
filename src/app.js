@@ -20,14 +20,18 @@ app.use(express.json());
 // Complete this Route which will return the count of Number of Prefixmatch for the name in the query/
 
 app.get("/",async function(req,res){
+  try {
+    const prefix = req.query.name || ''; // Get the prefix from the query input
 
-    var count = 0;
+    const regex = new RegExp('^' + prefix, 'i'); // Create a case-insensitive regular expression to match the prefix
 
-    //Write you code here
-    //update count variable
+    const count = await users.countDocuments({ name: regex }); // Count the documents in the users collection that match the prefix
 
     res.send(JSON.stringify(count));
-
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 module.exports = app;
